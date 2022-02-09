@@ -1,88 +1,12 @@
 <?php
 
-class Query {
-    protected int $sirenInput ;
-    protected bool $isAccountValid = false;
-    protected $validQueries = ["96.02A", "96.02B", "96.02AA"];
-    protected $nom ;
-    protected $prenom ;
-
-
-    public function __construct(int $sirenInput){
-        $this->sirenInput = $sirenInput ;
-
-    }
-
-    /**
-     * @param int $sirenInput
-     */
-    public function setSirenInput(int $sirenInput): void
-    {
-        if(is_int($sirenInput) && $sirenInput >= 111111111 && $sirenInput <= 999999999){
-
-            $this->sirenInput = $sirenInput ;
-        }
-        else{
-            throw new Exception("Un numéro de sirene est composé de 9 chiffres !");
-        }
-    }
-
-    /**
-     * @return int
-     */
-    public function getSirenInput(): int
-    {
-      return $this->sirenInput ;
-    }
-
-    /**
-     * @return string
-     */
-    public function getApiUrl(): string
-    {
-        return $this->apiUrl;
-    }
-
-
-
-    /**
-     * @return mixed
-     */
-    public function getNom()
-
-    {
-        return $this->nom;
-    }
-
-
-
-    public function search( $sirenInput){
-
-        $apiUrl = "https://entreprise.data.gouv.fr/api/sirene/v3/unites_legales/" ;
-        $url = $apiUrl.$sirenInput ;
-         $json = file_get_contents( $url) ;
-         $data = json_decode($json, true) ;
-
-        // Variables de l'API
-         $main_activity = $data["unite_legale"]['activite_principale'] ;
-         $firstName = $data["unite_legale"]['prenom_usuel'];
-
-
-         return array( $data["unite_legale"]['activite_principale'],$data["unite_legale"]['prenom_usuel']);
-
-    }
-
-    public function validateEntry($isAccountValid,$validQueries){
-
-    }
-
-
-}
-
-
-
-
+require_once('libraries/models/Query.php') ;
+   $sirenInput = $_POST["sirenInput"];
+        $newRequest = new Query($sirenInput);
+        $newRequest->setSirenInput($sirenInput);
 ?>
+
+
 <!doctype html>
 <html lang="fr">
 <head>
@@ -99,56 +23,45 @@ class Query {
 <body>
 
 
+<div class="app-container">
+    <div class="app-title">
+        <h1 class="main-title">Sirene checker</h1>
+    </div>
 
-    <div class="app-container">
-        <div class="app-title">
-            <h1 class="main-title">Sirene checker</h1>
-        </div>
+    <div class="query-form">
+        <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
+            <input type="number" style="width: 12vw; height: 2vw; font-size: 1.2vw" name="sirenInput" placeholder="N° Siren (9 chiffres ) ">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
 
-        <div class="query-form">
-            <form action="<?php echo $_SERVER['PHP_SELF'] ?>"  method="POST">
-                <input type="tel" name="sirenInput" placeholder="N° Siren (9 chiffres ) ">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
+    <div class="app-answers">
 
         <?php
 
-        if(isset($_POST['sirenInput'])){
-            $sirenInput = $_POST['sirenInput'];
-            $myQuery = new Query($sirenInput);
-            $myQuery->setSirenInput($sirenInput);
-        }
-        else {
-            echo "N° Siren invalide ! " ;
-        }
         ?>
+        <div class="owner-details">
+            <div class="owner-details-title">
+                <h2>Informations sur le propriétaire</h2>
+            </div>
 
-        <div class="app-answers">
-          <div class="owner-details">
-              <div class="owner-details-title">
-                  <h2>Informations sur le propriétaire</h2>
-              </div>
-
-              <div class="name-container">
-                 <div class="name-label">
+            <div class="name-container">
+                <div class="name-label">
                     Nom
-                 </div>
-                <div class="owner-name">
-                  <?php echo  $myQuery->search($sirenInput) ?>
                 </div>
-              </div>
-
-         </div>
+                <div class="owner-name">
+                    <?php  $newRequest->displayApiVal( $newRequest->search($sirenInput),"ownerFirstN") ?>
+                    <?php  $newRequest->displayApiVal( $newRequest->search($sirenInput),"ownerLastN") ?>
+                    <?php  $newRequest->displayApiVal( $newRequest->search($sirenInput),"mainActivity") ?>
+                </div>
+            </div>
 
         </div>
 
-
-
-
-
-
     </div>
+
+
+</div>
 
 </body>
 </html>
