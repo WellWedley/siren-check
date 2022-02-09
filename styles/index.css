@@ -1,0 +1,43 @@
+.app-container{
+    display: flex;
+    flex-direction: column;
+    background-color:#25488d;
+    color: #fff;
+
+}
+
+.app-title{
+    background-color: rgba(49, 68, 196, 0.87);
+}
+
+.main-title {
+    font-size: 3vw;
+    text-align: center;
+    color: #fff;
+}
+
+.query-form{
+    display: flex;
+    flex-direction: column;
+    padding : 2.5vw;
+    align-items: center;
+
+}
+
+.app-answers{
+    display: flex;
+    flex-direction: column ;
+    text-align: center;
+}
+
+.owner-details{
+    display: flex;
+    flex-direction: column;
+}
+
+.name-container{
+    display: flex ;
+    flex-direction: row ;
+    gap: 5vw;
+
+}
