@@ -23,24 +23,36 @@
     align-items: center;
 
 }
+.query-form-input{
+
+    width: 16vw;
+    height: 2.6vw;
+    font-size: 1.7vw;
+    text-align: center;
+}
+
+.search-button{
+    width: 15vw;
+    height: 3vw;
+    font-size: 1.5vw;
+}
 
 .app-answers{
     display: flex;
     flex-direction: column ;
     text-align: center;
+    align-items: center;
+    gap: 2vw;
 }
 
 .display-errors{
     color: #d78b8b;
 }
-.owner-details{
-    display: flex;
-    flex-direction: column;
-}
 
-.name-container{
+
+.name-container , .business-container{
     display: flex ;
-    flex-direction: row ;
-    gap: 5vw;
+    flex-direction: column ;
+    gap: 1.5vw;
 
 }

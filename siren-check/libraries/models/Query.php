@@ -9,18 +9,15 @@ class Query
     protected $prenom;
 
 
-    public function __construct(int $sirenInput)
-    {
-        $this->sirenInput = $sirenInput;
 
-    }
 
     /**
      * @param int $sirenInput
+     * @throws Exception
      */
     public function setSirenInput( int $sirenInput): void
     {
-        if (!isset($_POST['sirenInput'])) {
+        if (!isset($sirenInput)) {
             echo "<div class='display-errors'>   Veuillez entrer un n° de Siren à vérifier. </div>";
 
         } elseif( $sirenInput >= 111111111 && $sirenInput <= 999999999) {
@@ -30,6 +27,12 @@ class Query
         else {
             throw new Exception("Un numéro de sirene est composé de 9 chiffres !");
         }
+    }
+
+    public function __construct(int $sirenInput)
+    {
+        $this->sirenInput = $sirenInput;
+
     }
 
     /**
@@ -73,17 +76,34 @@ class Query
 
     function displayApiVal($data,$request){
         //Tab with api's values
-        $apiVariables = array("ownerFirstN"=>$data["unite_legale"]['prenom_usuel'],
-            "ownerLastN"=>$data["unite_legale"]['nom'],
-            "ownerId"=>$data["unite_legale"]['id'],
-            "mainActivity"=>$data["unite_legale"]['activite_principale']);
+        $apiVariables = ["ownerFirstN"=> $data["unite_legale"]['prenom_usuel'],
+            "ownerLastN"=> $data["unite_legale"]['nom'],
+            "ownerId"=> $data["unite_legale"]['id'],
+            "denomination" => $data["unite_legale"]["denomination"],
+            "activite_principale" => $data["unite_legale"]['activite_principale'],
+            "numero_voie" => $data["unite_legale"]["etablissement_siege"]["numero_voie"],
+            "type_voie" => $data["unite_legale"]["etablissement_siege"]["type_voie"],
+            "libelle_voie" => $data["unite_legale"]["etablissement_siege"]["libelle_voie"],
+            "code_postal" => $data["unite_legale"]["etablissement_siege"]["code_postal"],
+            "libelle_commune" => $data["unite_legale"]["etablissement_siege"]["libelle_commune"],
+            "date_debut" => $data["unite_legale"]["etablissement_siege"]["date_debut"],
+            "etat_administratif" => $data["unite_legale"]["etablissement_siege"]["etat_administratif"]];
+
 
         foreach ($apiVariables as $key=>$value )
         {
-            if ($key === $request){
-                echo $apiVariables[$request] ;
+            if ($request == $key && !is_null($apiVariables[$request])){
+                $result =  strtolower($apiVariables[$request]) ;
+                  return  ucfirst($result) ;
+
             }
+
         }
+         //Function that tests if the information is provided or not.
+        if (is_null($apiVariables[$request])) {
+                echo "  / " ;
+            }
+
     }
 
     // Function that checks if the input matches with the database api values, based on siret number

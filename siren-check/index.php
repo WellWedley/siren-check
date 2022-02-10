@@ -1,9 +1,19 @@
 <?php
 
 require_once('libraries/models/Query.php') ;
-   $sirenInput = $_POST["sirenInput"];
+
+if (isset($_POST['sirenInput'])){
+
+    try {
+        $sirenInput = $_POST["sirenInput"];
         $newRequest = new Query($sirenInput);
         $newRequest->setSirenInput($sirenInput);
+    }
+    catch (Exception $e) {
+        echo 'Exception reçue : ', $e->getMessage() , '\n';
+    }
+}
+
 ?>
 
 
@@ -30,34 +40,63 @@ require_once('libraries/models/Query.php') ;
 
     <div class="query-form">
         <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-            <input type="number" style="width: 12vw; height: 2vw; font-size: 1.2vw" name="sirenInput" placeholder="N° Siren (9 chiffres ) ">
-            <button type="submit"><i class="fa fa-search"></i></button>
+            <input type="number"class="query-form-input"  name="sirenInput" placeholder="N° Siren (9 chiffres ) ">
+            <button class="search-button" type="submit"><i class="fa fa-search"></i>&nbsp;Chercher</button>
         </form>
     </div>
 
     <div class="app-answers">
 
-        <?php
-
-        ?>
+<!--            Détails de la personne physique-->
         <div class="owner-details">
             <div class="owner-details-title">
-                <h2>Informations sur le propriétaire</h2>
+                <img src="https://img.icons8.com/color/48/000000/manager.png"/>
             </div>
 
             <div class="name-container">
-                <div class="name-label">
-                    Nom
+                <div class="lastName-label">
+                    <p>Nom : </p>
+                </div>
+                <div class="owner-lastName">
+                    <p><?php  echo $newRequest->displayApiVal( $newRequest->search($sirenInput),"ownerLastN") ?></p>
+                </div>
+
+                <div class="firstName-label">
+                   <p> Prénom : </p>
                 </div>
                 <div class="owner-name">
-                    <?php  $newRequest->displayApiVal( $newRequest->search($sirenInput),"ownerFirstN") ?>
-                    <?php  $newRequest->displayApiVal( $newRequest->search($sirenInput),"ownerLastN") ?>
-                    <?php  $newRequest->displayApiVal( $newRequest->search($sirenInput),"mainActivity") ?>
+                   <p> <?php echo $newRequest->displayApiVal( $newRequest->search($sirenInput),"ownerFirstN") ?></p>
                 </div>
             </div>
 
         </div>
 
+<!--        // Détails sur l'établissement-->
+        <div class="business-details">
+            <div>
+                <img src="https://img.icons8.com/external-flat-icons-maxicons/45/000000/external-agent-insurance-flat-flat-icons-maxicons-2.png"/>
+            </div>
+
+            <div class="business-container">
+
+                <div class="denomination">
+                    <p> Dénomination : &nbsp<?php  echo $newRequest->displayApiVal( $newRequest->search($sirenInput),"denomination")  ?></p>
+                </div>
+
+                <div class="activite-principale">
+                        <p> Activité principale : &nbsp<?php  echo $newRequest->displayApiVal( $newRequest->search($sirenInput),"activite_principale")  ?></p>
+                </div>
+
+                <div class="adresse">
+                    <p> Adresse : &nbsp<?php  echo $newRequest->displayApiVal( $newRequest->search($sirenInput),"numero_voie")."&nbsp".
+                                                   $newRequest->displayApiVal($newRequest->search($sirenInput), "type_voie")."&nbsp".
+                                                   $newRequest->displayApiVal($newRequest->search($sirenInput),"libelle_voie")."&nbsp,&nbsp".
+                                                   $newRequest->displayApiVal($newRequest->search($sirenInput),"code_postal")."&nbsp".
+                                                   $newRequest->displayApiVal($newRequest->search($sirenInput),"libelle_commune") ?></p>
+                </div>
+            </div>
+
+        </div>
     </div>
 
 
